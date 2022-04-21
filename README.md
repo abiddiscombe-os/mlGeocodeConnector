@@ -2,16 +2,16 @@
 ## Background
 A set of helper functions which convert the bespoke JSON from the **OS Names API** or the **OS Places API** into [Carmen-GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md), the accepted response format for MapLibre's [maplibre-gl-geocoder](https://github.com/maplibre/maplibre-gl-geocoder) plugin.
 
-### Supported Geocode Operations
+### Supported Operations
 - forwardGeocode
 
 ### Feature List
-- Sits within the os.mlGeocodeConverter object, alongside os.Transform and os.Branding
+- Sits within the os.<name> object, alongside os.Transform and os.Branding to make integration easier
 - Compatable with both the OS Names and OS Places APIs
-- Defines the total features returned using maplibre-gl-geocoder's `options.limit` value
+- Limits the total features returned by the OS APIs using maplibre-gl-geocoder's `options.limit` value
 
 ## Installation
-The os-mlGeocodeConverter requires [proj4js](https://github.com/proj4js/proj4js) and [os-transform](https://github.com/OrdnanceSurvey/os-transform) to support coordinate conversion from ESPG27700 into ESPG3857.
+The os-mlGeocodeConverter requires [proj4js](https://github.com/proj4js/proj4js) and [os-transform](https://github.com/OrdnanceSurvey/os-transform) to support coordinate conversion from ESPG27700 to ESPG3857 for use in MapLibre.
 
 Download both os-transform and os-mlGeocodeConverter and import all the libraries (alongside MapLibre, OS Branding and MapLibre-GL-Geocoder)
 
@@ -27,16 +27,16 @@ Download both os-transform and os-mlGeocodeConverter and import all the librarie
 ```
 
 ## Usage
-Please read the [os-transform](https://github.com/OrdnanceSurvey/os-transform) documentation fully, you need to define the ESPG27700-to-ESPG3857 transformation prior to using os-mlGeocodeConverter. This is explained in the docs, and shown in the example (`example.html`).
+Please read the [os-transform](https://github.com/OrdnanceSurvey/os-transform) documentation, you need to define the proj4js ESPG27700-to-ESPG3857 transformation prior to using os-mlGeocodeConverter. This is explained in the docs, and shown in the example (`example/example.html`).
 
-Use the `os.mapLibreGeocodeConverter.apiKey` to define the OS Data Hub API Key (which is connected to the OS Names or Places API)
+Use the `os.mlGeocodeConverter.apiKey` to define the OS Data Hub API Key (which is connected to the OS Names or Places API)
 
 Create a new MapLibreGeocoder instance, and pass in either:
 - `os.mlGeocodeConverter.places` for the OS Places API
 - `os.mlGeocodeConverter.names` for the OS Names API
 
 ```
-os.mapLibreGeocodeConverter.apiKey = <your-api-key-here>;
+os.mlGeocodeConverter.apiKey = <your-api-key-here>;
 
 map.addControl(
     new MaplibreGeocoder(os.mlGeocodeConverter.places, {
