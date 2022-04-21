@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>os-mlGeocodeConverter | Sample</title>
+    <link rel="stylesheet" href="https://labs.os.uk/public/os-api-branding/v0.3.0/os-api-branding.css" type="text/css"/>
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@2.1.7/dist/maplibre-gl.css' type="text/css"/>
+    <link rel="stylesheet" href="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.2.0/dist/maplibre-gl-geocoder.css" type="text/css"/>
+</head>
+
+<style>
+    body {
+        padding: 0; margin: 0; height: 100vh;
+        display: grid; grid-template-rows: auto 1fr;
+    }
+    body > header {
+        padding: 8px 16px; margin: 0; align-items: center;
+        background: #FFFFFF; color: #333333; border-bottom: 1px solid #DDDDDD;
+    }
+    body > header > h1 {
+        padding: 8px 0px; margin: 0;
+        font-family: Arial, Helvetica, sans-serif; font-weight: 400; font-size: 1.2em;
+    }
+    body > main {
+        padding: 0; margin: 0; height: 100%;
+    }
+</style>
+
+<body>
+    <header>
+        <h1>os-mlGeocodeConverter | Sample</h1>
+    </header>
+    <main>
+        <div id="map" style="height: 100%">
+            <noscript>
+                <h2>JavaScript Required.</h2>
+                <p>You need JavaScript to run this app. Please enable it and re-load this page.</p>
+            </noscript>
+        </div>
+    </main>
+</body>
+
+<script src='https://unpkg.com/maplibre-gl@2.1.7/dist/maplibre-gl.js'></script>
+<script src="https://labs.os.uk/public/os-api-branding/v0.3.0/os-api-branding.js"></script>
+<script src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.2.0/dist/maplibre-gl-geocoder.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.0/proj4.js"></script>
+<script src="./os-transform.js"></script>
+<script src="/os-mlGeocodeConverter.js"></script>
+<script>
+
+    const apiKey = 'enter your api key here';
+
+    // required for os-transform
+    proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 +units=m +no_defs');
+
+    if (!maplibregl.supported()) {
+        alert('Your browser does not support MapLibre GL.');
+        throw new Error;
+    } else {
+            var map = new maplibregl.Map({
+            container: 'map',
+            style: {
+                "version": 8,
+                "sources": {
+                    // (1/2) OS Maps API for a simple basemap
+                    "osBasemap": {
+                        "type": "raster",
+                        "tiles": [`https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=${apiKey}`], 
+                        "tileSize": 256,
+                        "maxzoom": 20,
+                    },
+                },
+                "layers": [
+                    // (2/2) OS Maps API for a simple basemap
+                    {
+                        "id": "OS Maps API (Road)",
+                        "type": "raster",
+                        "source": "osBasemap"
+                    }
+                ]
+            },
+            center: [-0.0920, 51.5078],
+            zoom: 15,
+        });
+    }
+
+    map.on('load', function() {
+
+        // specify OS Data Hub key
+        os.mlGeocodeConverter.apiKey = apiKey;
+
+        map.addControl(
+            new MaplibreGeocoder(os.mlGeocodeConverter.names, {
+                maplibregl: maplibregl,
+                limit: 6,
+                showResultsWhileTyping: true
+            }), 'top-right'
+        );
+
+    });
+
+</script>
+
+</html>
