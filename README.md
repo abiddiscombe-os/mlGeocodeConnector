@@ -12,7 +12,7 @@ Insert the `mlGeocodeConnector.js` script into your HTML.
 ```
 
 ## Usage
-Like other Ordnance Survey libraries such as [os-transform](https://github.com/OrdnanceSurvey/os-transform), mlGeocodeConnector is nested within the `os.` namespace.
+Like other OS projects such as [os-transform](https://github.com/OrdnanceSurvey/os-transform), mlGeocodeConnector is nested within the `os.` namespace.
 
 You must specify an API key which permits access to either the OS Names API or the OS Places API:
 ```javascript
@@ -20,7 +20,7 @@ os.mlGeocodeConnector.apiKey = 'your-key-goes-here';
 ```
 
 ### 1. Reverse Geocode on the OS Places API
-Initialise a new MapLibreGeocoder control. Pass in `os.mlGeocodeConnector.places` as the first argument.
+Initialise a new MapLibreGeocoder control. Pass in `os.mlGeocodeConnector.places` as the first argument:
 
 ```javascript
 map.addControl(
