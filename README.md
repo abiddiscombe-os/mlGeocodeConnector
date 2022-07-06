@@ -1,43 +1,28 @@
-# os-mlGeocodeConverter
-## Background
-A set of helper functions which convert the bespoke JSON from the **OS Names API** or the **OS Places API** into [Carmen-GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md), the accepted response format for MapLibre's [maplibre-gl-geocoder](https://github.com/maplibre/maplibre-gl-geocoder) plugin.
+# mlGeocodeConnector
+A tool to convert the JSON responses of the OS Names API and the OS Places API into [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md). This is the response format accepted by MapLibre's [maplibre-gl-geocoder](https://github.com/maplibre/maplibre-gl-geocoder) plugin.
 
-### Supported Operations
-- forwardGeocode
-
-### Feature List
-- Sits within the os.<name> object, alongside os.Transform and os.Branding to make integration easier
-- Compatable with both the OS Names and OS Places APIs
-- Limits the total features returned by the OS APIs using maplibre-gl-geocoder's `options.limit` value
+> **Warning**  
+> At this time, mlGeocodeConnector only supports only supports forwardGeocode operations on the OS Places API. This project is a work-in-progress and further functionality will be added in the future.
 
 ## Installation
-The os-mlGeocodeConverter requires [proj4js](https://github.com/proj4js/proj4js) and [os-transform](https://github.com/OrdnanceSurvey/os-transform) to support coordinate conversion from ESPG27700 to ESPG3857 for use in MapLibre.
+Insert the `mlGeocodeConnector.js` script into your HTML.
 
-Download both os-transform and os-mlGeocodeConverter and import all the libraries (alongside MapLibre, OS Branding and MapLibre-GL-Geocoder)
-
-```
-<!-- Proj4js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.0/proj4.js"></script>
-
-<!-- os-transform (local copy) -->
-<script src="./os-transform.js"></script>
-
-<!-- os-mlGeocodeConverter (local copy) -->
-<script src="./os-MLGeocodeConverter.js"></script>
+```html
+<script src="./mlGeocodeConnector.js"></script>
 ```
 
 ## Usage
-Please read the [os-transform](https://github.com/OrdnanceSurvey/os-transform) documentation, you need to define the proj4js ESPG27700-to-ESPG3857 transformation prior to using os-mlGeocodeConverter. This is explained in the docs, and shown in the example (`example/example.html`).
+Like other Ordnance Survey libraries such as [os-transform](https://github.com/OrdnanceSurvey/os-transform), mlGeocodeConnector is nested within the `os.` namespace.
 
-Use the `os.mlGeocodeConverter.apiKey` to define the OS Data Hub API Key (which is connected to the OS Names or Places API)
-
-Create a new MapLibreGeocoder instance, and pass in either:
-- `os.mlGeocodeConverter.places` for the OS Places API
-- `os.mlGeocodeConverter.names` for the OS Names API
-
+You must specify an API key which permits access to either the OS Names API or the OS Places API:
+```javascript
+os.mlGeocodeConnector.apiKey = 'your-key-goes-here';
 ```
-os.mlGeocodeConverter.apiKey = <your-api-key-here>;
 
+### 1. Reverse Geocode on the OS Places API
+Initialise a new MapLibreGeocoder control. Pass in `os.mlGeocodeConnector.places` as the first argument.
+
+```javascript
 map.addControl(
     new MaplibreGeocoder(os.mlGeocodeConverter.places, {
         maplibregl: maplibregl,
@@ -46,8 +31,8 @@ map.addControl(
     }), 'top-right'
 );
 ```
-Optionally, you may also wish to specify a `limit` or `showResultsWhileTyping` as demonstrated.
 
-## Changelog
-### Version 0.1.0 (April 2022)
-- Initial release
+Optionally you may specify a `limit` for the number of results returned or set `showResultsWhileTyping` to update the geocode response with each keystroke.
+
+> **Warning**  
+> Enabling `showResultsWhileTyping` may eat up your OS API usage, resulting in higher costs.

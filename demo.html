@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>os-mlGeocodeConverter - Demo</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="github.com/abiddiscombe-os">
+        <link rel="stylesheet" href="https://labs.os.uk/public/os-api-branding/v0.3.0/os-api-branding.css" type="text/css" />
+        <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@2.1.7/dist/maplibre-gl.css' type="text/css" />
+        <link rel="stylesheet" href="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.2.0/dist/maplibre-gl-geocoder.css" type="text/css" />
+    </head>
+
+    <body>
+        <header>
+            <h1>mlGeocodeConnector Demo</h1>
+            <p>Demonstration of the mlGeocodeConnector library.</p>
+        </header>
+        <main>
+            <div id="map" style="height: 100%">
+                <noscript>
+                    <p>JavaScript is required to use MapLibre.</p>
+                </noscript>
+            </div>
+        </main>
+    </body>
+
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Sans+Pro:wght@400;600&display=swap');
+        h1 {
+            margin: 0px; padding: 0px 0px 4px 0px; 
+            font-size: 1.2em; font-weight: 600; font-family: sans-serif;
+        }
+        p {
+            margin: 0px; padding: 0px 0px 4px 0px;
+            font-size: 0.92em; font-weight: 400; font-family: sans-serif;
+        }
+        body {
+            padding: 0; margin: 0;
+            height: 100vh;
+            display: grid; grid-template-rows: auto 1fr;
+        }
+        body > header {
+            padding: 14px; margin: 0;
+            background: hsl(0, 0%, 98%); color: hsl(0, 0%, 20%);
+            border-bottom: 1px solid hsl(0, 0%, 92%);
+        }
+        body > main {
+            padding: 0; margin: 0;
+            height: 100%;
+        }
+
+    </style>
+
+    <script src='https://unpkg.com/maplibre-gl@2.1.7/dist/maplibre-gl.js'></script>
+    <script src="https://labs.os.uk/public/os-api-branding/v0.3.0/os-api-branding.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.2.0/dist/maplibre-gl-geocoder.min.js"></script>
+    <script src="mlGeocodeConnector.js"></script>
+    <script>
+
+        const apiKey = 'your-api-key-here';
+
+        var map = new maplibregl.Map({
+            container: 'map',
+            style: {
+                "version": 8,
+                "sources": {
+                    "basemap": {
+                        "type": "raster",
+                        "tiles": [`https://api.os.uk/maps/raster/v1/zxy/Road_3857/{z}/{x}/{y}.png?key=${apiKey}`],
+                        "tileSize": 256,
+                        "maxzoom": 20,
+                    },
+                },
+                "layers": [
+                    {
+                        "id": "OS Maps API (Road)",
+                        "type": "raster",
+                        "source": "basemap"
+                    }
+                ]
+            },
+            center: [-0.0920, 51.5078],
+            zoom: 15,
+        });
+
+        map.on('load', function () {
+            
+            os.mlGeocodeConnector.apiKey = apiKey;
+
+            map.addControl(
+                new MaplibreGeocoder(os.mlGeocodeConnector.places, {
+                    maplibregl: maplibregl,
+                    limit: 6,
+                    showResultsWhileTyping: true
+                }), 'top-right'
+            );
+
+        });
+
+    </script>
+
+</html>
